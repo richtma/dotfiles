@@ -2,6 +2,6 @@
 
 This will update and grow oder time.  Check back in a while. 
 
-- [] zshrc config
-- [] Neovim config
-- [] tmux config
+- [x] zshrc config
+- [x] Neovim config
+- [ ] tmux config
