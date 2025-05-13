@@ -2,6 +2,7 @@
 
 This will update and grow oder time.  Check back in a while. 
 
-- [x] zshrc config
-- [x] Neovim config
+- [X] zshrc config
+- [X] Neovim config
 - [ ] tmux config
+- [ ] ...
