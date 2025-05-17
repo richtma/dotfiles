@@ -8,12 +8,12 @@ local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
     "git", "clone", "--filter=blob:none",
-    "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable", lazypath
+    "https://github.com/folke/lazy.nvim.git", lazypath,
   })
 end
 vim.opt.rtp:prepend(lazypath)
 
+-- Load Plugins
 require("lazy").setup({
   -- Theme
   { "folke/tokyonight.nvim", lazy = false, priority = 1000, config = function()
@@ -21,21 +21,36 @@ require("lazy").setup({
     end
   },
 
--- Treesitter for syntax highlighting
-  { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate", config = function()
+-- Treesitter (Syntax Highlighting)
+  { "nvim-treesitter/nvim-treesitter", run = ":TSUpdate", config = function()
       require("nvim-treesitter.configs").setup {
+        ensure_installed = { "c", "dockerfile", "go", "markdown", "python", "typescript", "html", "latex" },
+        sync_install = false,
+        auto_install = true,
         highlight = { enable = true },
         indent = { enable = true }
       }
     end
   },
 
--- Autocompletion
+-- LSP & Autocompletion
+  { "neovim/nvim-lspconfig", config = function()
+      local lspconfig = require("lspconfig")
+      local servers = { "pyright", "dockerls", "marksman", "gopls", "ts_ls" }
+      for _, server in ipairs(servers) do
+        lspconfig[server].setup{
+          capabilities = require('cmp_nvim_lsp').default_capabilities(),
+        }
+      end
+    end
+  },
+
   { "hrsh7th/nvim-cmp", dependencies = {
       "hrsh7th/cmp-nvim-lsp",
+      "hrsh7th/cmp-buffer",
+      "hrsh7th/cmp-path",
       "L3MON4D3/LuaSnip",
-      "saadparwaiz1/cmp_luasnip"
-    }, config = function()
+  }, config = function()
       local cmp = require("cmp")
       cmp.setup({
         snippet = {
@@ -51,44 +66,38 @@ require("lazy").setup({
         sources = {
           { name = "nvim_lsp" },
           { name = "luasnip" },
+          { name = "buffer" },
+          { name = "path" },
         },
       })
     end
   },
 
--- LSP Config
-  { "neovim/nvim-lspconfig", config = function()
-      local lspconfig = require("lspconfig")
-      lspconfig.lua_ls.setup({})
-    end
-  },
-
--- FZF
+  -- Fuzzy Finder (Telescope & FZF)
   { "ibhagwan/fzf-lua", config = function()
       require("fzf-lua").setup({})
     end
   },
 
--- Telescope
-  { "nvim-telescope/telescope.nvim", tag = "0.1.5", dependencies = { "nvim-lua/plenary.nvim" }, config = function()
+  { "nvim-telescope/telescope.nvim", dependencies = { "nvim-lua/plenary.nvim" }, config = function()
       require("telescope").setup{}
     end
   },
 
--- File tree
+  -- Git Integration
+  { "tpope/vim-fugitive" },
+
+  -- VSCode-like Snippet Support
+  { "L3MON4D3/LuaSnip", dependencies = { "saadparwaiz1/cmp_luasnip" } },
+
+  -- File tree
   { "kyazdani42/nvim-tree.lua", config = function()
       require("nvim-tree").setup{}
     end
   },
 
--- Git integration
-  { "lewis6991/gitsigns.nvim", config = function()
-      require("gitsigns").setup{}
-    end
-  },
-
--- Status line
-  { "nvim-lualine/lualine.nvim", dependencies = { "kyazdani42/nvim-web-devicons", opt = true }, config = function()
+  -- Status line
+  { "nvim-lualine/lualine.nvim", dependencies = { "kyazdani42/nvim-web-devicons" }, config = function()
       require("lualine").setup {
         options = {
           theme = "tokyonight"
@@ -96,8 +105,8 @@ require("lazy").setup({
       }
     end
   },
-
 })
+
 
 -------------------
 -- options
