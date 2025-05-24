@@ -24,7 +24,7 @@ require("lazy").setup({
 -- Treesitter (Syntax Highlighting)
   { "nvim-treesitter/nvim-treesitter", run = ":TSUpdate", config = function()
       require("nvim-treesitter.configs").setup {
-        ensure_installed = { "c", "dockerfile", "go", "markdown", "python", "typescript", "html", "latex" },
+        ensure_installed = { "yaml", "dockerfile", "go", "markdown", "python", "typescript", "html" },
         sync_install = false,
         auto_install = true,
         highlight = { enable = true },
