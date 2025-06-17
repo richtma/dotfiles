@@ -1,6 +1,6 @@
 ## My own personal dotfiles.
 
-This will update and grow over time.  Check back in a while. 
+Still in motion.  Check back in a while if you're interested. 
 
 - [X] zshrc config
 - [X] Neovim config
